@@ -30,8 +30,8 @@ export default function RootLayout({
             <div className="hidden md:flex w-64 flex-col fixed inset-y-0 z-50 border-r bg-background">
               <div className="flex h-14 items-center border-b px-4">
                 <Link href="/" className="flex items-center font-bold text-xl">
-                  <span className="text-red-500">汉语</span>
-                  <span className="ml-2">Master</span>
+                  <span className="text-sky-400">汉语</span>
+                  <span className="ml-2 text-sky-300">Master</span>
                 </Link>
               </div>
               <div className="flex-1 overflow-auto py-2">

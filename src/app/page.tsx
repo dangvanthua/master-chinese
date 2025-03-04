@@ -1,30 +1,92 @@
-"use client";
+"use client"
 
+import type React from "react"
+import { useState, useEffect, JSX } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, Mic, BarChart2, Users, Globe, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export default function Home() {
+interface FeatureCardProps {
+  icon: React.ReactNode
+  title: string
+  description: string
+  color: "red" | "amber" | "green" | "blue" | "purple"
+  number: string
+}
+
+interface LearningPathStepProps {
+  number: string
+  title: string
+  description: string
+  position: "left" | "right"
+  color: "red" | "amber" | "green" | "blue"
+  icon: string
+}
+
+interface TestimonialCardProps {
+  quote: string
+  name: string
+  title: string
+  image: string
+}
+
+interface FloatingLetter {
+  fontSize: string
+  left: string
+  top: string
+  animationDuration: string
+  animationDelay: string
+  text: string
+}
+
+export default function Home(): JSX.Element {
+  const [floatingLetters, setFloatingLetters] = useState<FloatingLetter[]>([])
+
+  useEffect(() => {
+    const letters: FloatingLetter[] = Array.from({ length: 50 }).map(() => ({
+      fontSize: `${Math.random() * 4 + 1}rem`,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDuration: `${Math.random() * 10 + 15}s`,
+      animationDelay: `${Math.random() * 5}s`,
+      text: ["你", "好", "学", "中", "文", "汉", "语", "字", "说", "写"][Math.floor(Math.random() * 10)],
+    }))
+    setFloatingLetters(letters)
+  }, [])
+
+  const handleStartLearning = (): void => {
+    console.log("User started learning")
+    // Có thể thêm logic chuyển hướng đến trang dashboard
+    // router.push('/dashboard');
+  }
+
+  const handleLearnMore = (): void => {
+    console.log("User wants to learn more")
+    // Có thể mở một modal hoặc chuyển đến trang thông tin chi tiết
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Hero Section with animated background */}
       <section className="w-full py-16 md:py-24 lg:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-amber-500 overflow-hidden">
+        {/* Animated background pattern */}
+        <div className="absolute inset-0 bg-gradient-to-r from-sky-400 to-blue-500 overflow-hidden">
           <div className="absolute inset-0 opacity-10">
-            {Array.from({ length: 50 }).map((_, i) => (
+            {floatingLetters.map((letter, i) => (
               <div
                 key={i}
                 className="absolute text-white text-opacity-20 animate-float"
                 style={{
-                  fontSize: `${Math.random() * 4 + 1}rem`,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDuration: `${Math.random() * 10 + 15}s`,
-                  animationDelay: `${Math.random() * 5}s`,
+                  fontSize: letter.fontSize,
+                  left: letter.left,
+                  top: letter.top,
+                  animationDuration: letter.animationDuration,
+                  animationDelay: letter.animationDelay,
                 }}
               >
-                {["你", "好", "学", "中", "文", "汉", "语", "字", "说", "写"][Math.floor(Math.random() * 10)]}
+                {letter.text}
               </div>
             ))}
           </div>
@@ -33,11 +95,6 @@ export default function Home() {
         <div className="container px-4 md:px-6 relative z-10">
           <div className="flex flex-col items-center space-y-4 text-center">
             <div className="space-y-2 max-w-3xl mx-auto">
-              <div className="inline-block animate-bounce-slow">
-                <span className="text-lg md:text-xl bg-white bg-opacity-20 px-4 py-1 rounded-full text-white font-medium">
-                  全新的学习体验 • New Learning Experience
-                </span>
-              </div>
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl/none lg:text-7xl text-white drop-shadow-md">
                 <span className="block">掌握中文</span>
                 <span className="block mt-2">Master Chinese Language</span>
@@ -51,6 +108,7 @@ export default function Home() {
               <Button
                 size="lg"
                 className="bg-white text-red-600 hover:bg-gray-100 text-lg px-8 py-6 rounded-full shadow-lg transition-transform hover:scale-105"
+                onClick={handleStartLearning}
               >
                 开始学习 Start Free
               </Button>
@@ -58,6 +116,7 @@ export default function Home() {
                 variant="outline"
                 size="lg"
                 className="border-white text-white hover:bg-white/20 text-lg px-8 py-6 rounded-full"
+                onClick={handleLearnMore}
               >
                 了解更多 Learn More
               </Button>
@@ -348,7 +407,7 @@ export default function Home() {
       </section>
 
       {/* Call to Action with Chinese paper cut style */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-r from-red-600 to-amber-500 text-white relative overflow-hidden">
+      <section className="w-full py-16 md:py-24 bg-gradient-to-r from-sky-400 to-blue-500 text-white relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 opacity-20">
             <svg viewBox="0 0 100 100" className="w-full h-full text-white">
@@ -397,8 +456,8 @@ export default function Home() {
   )
 }
 
-function FeatureCard({ icon, title, description, color, number }: any) {
-  const colorClasses: any = {
+function FeatureCard({ icon, title, description, color, number }: FeatureCardProps): JSX.Element {
+  const colorClasses: Record<string, string> = {
     red: "bg-red-50 border-red-100 hover:border-red-200",
     amber: "bg-amber-50 border-amber-100 hover:border-amber-200",
     green: "bg-green-50 border-green-100 hover:border-green-200",
@@ -422,15 +481,15 @@ function FeatureCard({ icon, title, description, color, number }: any) {
   )
 }
 
-function LearningPathStep({ number, title, description, position, color, icon }: any) {
-  const colorClasses: any = {
+function LearningPathStep({ number, title, description, position, color, icon }: LearningPathStepProps): JSX.Element {
+  const colorClasses: Record<string, string> = {
     red: "bg-red-500",
     amber: "bg-amber-500",
     green: "bg-green-500",
     blue: "bg-blue-500",
   }
 
-  const iconColorClasses: any = {
+  const iconColorClasses: Record<string, string> = {
     red: "bg-red-50 text-red-500",
     amber: "bg-amber-50 text-amber-500",
     green: "bg-green-50 text-green-500",
@@ -469,7 +528,7 @@ function LearningPathStep({ number, title, description, position, color, icon }:
   )
 }
 
-function TestimonialCard({ quote, name, title, image }: any) {
+function TestimonialCard({ quote, name, title, image }: TestimonialCardProps): JSX.Element {
   return (
     <Card className="h-full transition-all duration-300 hover:shadow-md bg-gray-50 border-gray-100 hover:border-gray-200">
       <CardContent className="p-6">
@@ -492,4 +551,3 @@ function TestimonialCard({ quote, name, title, image }: any) {
     </Card>
   )
 }
-
